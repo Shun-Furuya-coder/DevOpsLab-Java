@@ -1,6 +1,13 @@
 package edu.sjsu;
 
+import java.util.regex.Pattern;
+
 public class NameChecker {
+    // 正規表現を使用して名前検証ルールを定義
+    // 条件: 2〜40文字、アルファベット、非連続ハイフン、単一のシングルクォート、シングルクォートの前後にアルファベットが必要
+    private static final Pattern VALID_NAME_PATTERN = Pattern.compile(
+            "^[A-Za-z]+(?:['-][A-Za-z]+)*$");
+
     /**
      * Checks if a given string is a valid name following these rules:
      * - Between 2 to 40 characters
@@ -12,38 +19,11 @@ public class NameChecker {
      * @return True if input is a valid name, else false
      */
     public static boolean check(String input) {
-        // TODO: implement
-        // Check if the input is null or its length is out of the allowed range
+        // nullチェックと長さチェック
         if (input == null || input.length() < 2 || input.length() > 40) {
             return false;
         }
-
-        // Check if the input starts with a hyphen or a single quote
-        if (input.startsWith("-") || input.startsWith("'")) {
-            return false;
-        }
-
-        // Check for invalid characters and consecutive hyphens
-        boolean previousCharWasHyphen = false;
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-
-            // Check for alphabetic characters or allowed punctuation
-            if (!(Character.isAlphabetic(c) || c == '-' || c == '\'')) {
-                return false;
-            }
-
-            // Check for consecutive hyphens
-            if (c == '-') {
-                if (previousCharWasHyphen) {
-                    return false; // Two consecutive hyphens
-                }
-                previousCharWasHyphen = true;
-            } else {
-                previousCharWasHyphen = false;
-            }
-        }
-
-        return true; // If all checks pass, the name is valid
+        // 正規表現によるパターンマッチングで名前を検証
+        return VALID_NAME_PATTERN.matcher(input).matches();
     }
 }
